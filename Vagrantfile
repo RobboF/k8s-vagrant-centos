@@ -69,9 +69,11 @@ end
 
 $provisionMaster = <<-SCRIPT
 kubeadm init --pod-network-cidr 10.0.0.10/24 --apiserver-advertise-address 10.0.0.10
-kubeadm token create --print-join-command >> /vagrant/kubeadm_join_cmd.sh
+kubeadm token create --print-join-command > /vagrant/kubeadm_join_cmd.sh
 chmod +x /vagrant/kubeadm_join_cmd.sh
 cp /etc/kubernetes/admin.conf /vagrant/config
+mkdir -p ~/.kube && cp /etc/kubernetes/admin.conf ~/.kube/config
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 echo "copy config to local .kube" 
 SCRIPT
 $provisionNode = <<-SCRIPT
